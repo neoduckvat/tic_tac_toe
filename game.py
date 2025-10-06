@@ -1,25 +1,48 @@
-class Board:
+from gameparts import Board
+from gameparts.exceptions import FieldIndexError
 
-    from gameparts import Board
-    def __init__(self):
-        self.board = [[' ' for _ in range(3)] for _ in range(3)]
+def main():
+    game = Board()
+    game.display()
 
-    # Метод, который обрабатывает ходы игроков.
-    def make_move(self, row, col, player):
-        self.board[row][col] = player
+    # Запускается бесконечный цикл.
+    while True:
+        # В этом блоке содержатся операции, которые могут вызвать исключение.
+        try:
+            # Пользователь вводит значение номера строки.
+            row = int(input('Введите номер строки: '))
+            # Если введённое число меньше 0 или больше
+            # или равно game.field_size...
+            if row < 0 or row >= game.field_size:
+                # ...выбрасывается собственное исключение FieldIndexError.
+                raise FieldIndexError
+            column = int(input('Введите номер столбца: '))
+            # Если введённое число меньше 0 или больше
+            # или равно game.field_size...
+            if column < 0 or column >= game.field_size:
+                # ...выбрасывается собственное исключение FieldIndexError.
+                raise FieldIndexError
+        # Если возникает исключение FieldIndexError...
+        except FieldIndexError:
+            # ...выводятся сообщения...
+            print(
+                'Значение должно быть неотрицательным и меньше '
+                f'{game.field_size}.'
+            )
+            print('Пожалуйста, введите значения для строки и столбца заново.')
+            # ...и цикл начинает свою работу сначала,
+            # предоставляя пользователю ещё одну попытку ввести данные.
+            continue
+        # Если в блоке try исключения не возникло...
+        else:
+            # ...значит, введённые значения прошли все проверки
+            # и могут быть использованы в дальнейшем.
+            # Цикл прерывается.
+            break
 
-    # Метод, который отрисовывает игровое поле.
-    def display(self):
-        for row in self.board:
-            print('|'.join(row))
-            print('-' * 5)
+    game.make_move(row, column, 'X')
+    print('Ход сделан!')
+    game.display()
 
-# Создать игровое поле - объект класса Board.
-game = Board()
-# Отрисовать поле в терминале.
-game.display()
-# Разместить на поле символ по указанным координатам - сделать ход.
-game.make_move(1, 1, 'X')
-print('Ход сделан!')
-# Перерисовать поле с учётом сделанного хода.
-game.display()
+if __name__ == '__main__':
+    main()
